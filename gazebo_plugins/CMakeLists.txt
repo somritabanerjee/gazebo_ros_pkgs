@@ -344,7 +344,11 @@ if (CATKIN_ENABLE_TESTING)
                     test/set_model_state_test/set_model_state_test.cpp)
   target_link_libraries(set_model_state-test ${catkin_LIBRARIES})
 
-  # Can't run this and the above test together
+  # Can't run these and the above test together
+  add_rostest_gtest(multicamera-test
+                    test/camera/multicamera.test
+                    test/camera/multicamera.cpp)
+  target_link_libraries(multicamera-test ${catkin_LIBRARIES})
   # add_rostest_gtest(camera-test
   #                   test/camera/camera.test
   #                   test/camera/camera.cpp)
