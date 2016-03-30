@@ -339,12 +339,16 @@ install(DIRECTORY test
 # Tests
 if (CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
-  add_rostest_gtest(set_model_state-test
-                    test/set_model_state_test/set_model_state_test.test 
-                    test/set_model_state_test/set_model_state_test.cpp)
-  target_link_libraries(set_model_state-test ${catkin_LIBRARIES})
+  # add_rostest_gtest(set_model_state-test
+  #                   test/set_model_state_test/set_model_state_test.test 
+  #                   test/set_model_state_test/set_model_state_test.cpp)
+  # target_link_libraries(set_model_state-test ${catkin_LIBRARIES})
 
   # Can't run these and the above test together
+  add_rostest_gtest(depth_camera-test
+                    test/camera/depth_camera.test
+                    test/camera/depth_camera.cpp)
+  target_link_libraries(depth_camera-test ${catkin_LIBRARIES})
   # add_rostest_gtest(multicamera-test
   #                   test/camera/multicamera.test
   #                   test/camera/multicamera.cpp)
