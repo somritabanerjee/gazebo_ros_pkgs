@@ -55,6 +55,7 @@ generate_dynamic_reconfigure_options(
   cfg/GazeboRosCamera.cfg
   cfg/GazeboRosOpenniKinect.cfg
   cfg/Hokuyo.cfg
+  cfg/WheelSlip.cfg
 )
 
 include_directories(include
@@ -213,6 +214,13 @@ if (NOT GAZEBO_VERSION VERSION_LESS 7.3)
     ${Boost_LIBRARIES} HarnessPlugin ${catkin_LIBRARIES})
 endif()
 
+if (NOT GAZEBO_VERSION VERSION_LESS 7.3)
+  add_library(gazebo_ros_wheel_slip src/gazebo_ros_wheel_slip.cpp)
+  add_dependencies(gazebo_ros_wheel_slip ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_gencfg)
+  target_link_libraries(gazebo_ros_wheel_slip
+    ${Boost_LIBRARIES} WheelSlipPlugin ${catkin_LIBRARIES})
+endif()
+
 add_library(gazebo_ros_laser src/gazebo_ros_laser.cpp)
 target_link_libraries(gazebo_ros_laser RayPlugin ${catkin_LIBRARIES})
 
@@ -348,6 +356,13 @@ endif()
 
 if (NOT GAZEBO_VERSION VERSION_LESS 7.3)
   install(TARGETS gazebo_ros_harness
+    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    )
+endif()
+
+if (NOT GAZEBO_VERSION VERSION_LESS 7.3)
+  install(TARGETS gazebo_ros_wheel_slip
     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
     LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
     )

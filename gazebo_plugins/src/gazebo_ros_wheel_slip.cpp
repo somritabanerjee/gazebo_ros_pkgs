@@ -43,6 +43,18 @@ GazeboRosWheelSlip::~GazeboRosWheelSlip()
 }
 
 /////////////////////////////////////////////////
+void GazeboRosWheelSlip::configCallback(
+  gazebo_plugins::WheelSlipConfig &config, uint32_t /*level*/)
+{
+  ROS_INFO_NAMED("wheel_slip", "Reconfigure request for the gazebo ros wheel_slip: %s. New slip compliances, lateral: %.3e, longitudinal: %.3e",
+           this->GetParentModel()->GetScopedName().c_str(),
+           config.slip_compliance_unitless_lateral,
+           config.slip_compliance_unitless_longitudinal);
+  this->SetSlipComplianceLateral(config.slip_compliance_unitless_lateral);
+  this->SetSlipComplianceLongitudinal(config.slip_compliance_unitless_longitudinal);
+}
+
+/////////////////////////////////////////////////
 // Load the controller
 void GazeboRosWheelSlip::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
 {
@@ -72,6 +84,15 @@ void GazeboRosWheelSlip::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
 
   this->rosnode_ = new ros::NodeHandle(this->robotNamespace_);
 
+  // set up dynamic reconfigure
+  dyn_srv_ =
+    new dynamic_reconfigure::Server<gazebo_plugins::WheelSlipConfig>
+    (*this->rosnode_);
+  dynamic_reconfigure::Server<gazebo_plugins::WheelSlipConfig>
+    ::CallbackType f =
+    boost::bind(&GazeboRosWheelSlip::configCallback, this, _1, _2);
+  dyn_srv_->setCallback(f);
+
   ros::SubscribeOptions so = ros::SubscribeOptions::create<std_msgs::Float32>(
     "wheel_slip/velocity", 1,
     boost::bind(&GazeboRosWheelSlip::OnVelocity, this, _1),
@@ -92,16 +113,11 @@ void GazeboRosWheelSlip::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
 /////////////////////////////////////////////////
 void GazeboRosWheelSlip::OnVelocity(const std_msgs::Float32::ConstPtr &msg)
 {
-  // Set the target winch velocity
-  this->SetWinchVelocity(msg->data);
 }
 
 /////////////////////////////////////////////////
 void GazeboRosWheelSlip::OnDetach(const std_msgs::Bool::ConstPtr &msg)
 {
-  // Detach if true
-  if (msg->data)
-    this->Detach();
 }
 
 /////////////////////////////////////////////////

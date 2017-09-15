@@ -26,7 +26,7 @@
 #include <std_msgs/Bool.h>
 
 // dynamic reconfigure stuff
-#include <gazebo_plugins/GazeboRosWheelSlipConfig.h>
+#include <gazebo_plugins/WheelSlipConfig.h>
 #include <dynamic_reconfigure/server.h>
 
 #include <gazebo/plugins/WheelSlipPlugin.hh>
@@ -66,6 +66,11 @@ class GazeboRosWheelSlip : public WheelSlipPlugin
     /// \brief Custom callback queue thread
     private: void QueueThread();
 
+    // Allow dynamic reconfiguration of wheel slip params
+    private: void configCallback(
+                    gazebo_plugins::WheelSlipConfig &config,
+                    uint32_t level);
+
     /// \brief pointer to ros node
     private: ros::NodeHandle *rosnode_;
 
@@ -74,6 +79,10 @@ class GazeboRosWheelSlip : public WheelSlipPlugin
 
     /// \brief Subscriber to detach control messages.
     private: ros::Subscriber detachSub_;
+
+    /// \brief Dynamic reconfigure server.
+    private: dynamic_reconfigure::Server<gazebo_plugins::WheelSlipConfig>
+                    *dyn_srv_;
 
     /// \brief for setting ROS name space
     private: std::string robotNamespace_;
