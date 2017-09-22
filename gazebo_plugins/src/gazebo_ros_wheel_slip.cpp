@@ -61,9 +61,17 @@ void GazeboRosWheelSlip::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
   // Load the plugin
   WheelSlipPlugin::Load(_parent, _sdf);
 
-  this->robotNamespace_ = "";
   if (_sdf->HasElement("robotNamespace"))
+  {
     this->robotNamespace_ = _sdf->Get<std::string>("robotNamespace") + "/";
+  }
+  if (this->robotNamespace_.empty() ||
+      this->robotNamespace_ == "/" ||
+      this->robotNamespace_ == "//")
+  {
+    this->robotNamespace_ = "wheel_slip/";
+  }
+  this->robotNamespace_ = _parent->GetName() + "/" + this->robotNamespace_;
 
   // Init ROS
   if (!ros::isInitialized())
@@ -86,13 +94,13 @@ void GazeboRosWheelSlip::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
   dyn_srv_->setCallback(f);
 
   ros::SubscribeOptions so = ros::SubscribeOptions::create<std_msgs::Float32>(
-      "/" + _parent->GetName() + "/wheel_slip/velocity", 1,
+    "wheel_slip/velocity", 1,
     boost::bind(&GazeboRosWheelSlip::OnVelocity, this, _1),
     ros::VoidPtr(), &this->queue_);
   this->velocitySub_ = this->rosnode_->subscribe(so);
 
   so = ros::SubscribeOptions::create<std_msgs::Bool>(
-    "/" + _parent->GetName() + "/wheel_slip/detach", 1,
+    "wheel_slip/detach", 1,
     boost::bind(&GazeboRosWheelSlip::OnDetach, this, _1),
     ros::VoidPtr(), &this->queue_);
   this->detachSub_ = this->rosnode_->subscribe(so);
