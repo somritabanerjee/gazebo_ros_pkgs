@@ -63,11 +63,6 @@ class GazeboRosWheelSlip : public WheelSlipPlugin
     private: void PublishWheelSlips(
               const std::map<std::string, ignition::math::Vector3d> &_slips);
 
-    /// \brief Receive detach messages
-    /// \param[in] msg Boolean detach message. Detach joints if data is
-    /// true.
-    private: virtual void OnDetach(const std_msgs::Bool::ConstPtr &msg);
-
     /// \brief Custom callback queue thread
     private: void QueueThread();
 

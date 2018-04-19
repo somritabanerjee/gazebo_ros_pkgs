@@ -95,12 +95,6 @@ void GazeboRosWheelSlip::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
 
   this->wheelSlipPub_ = this->rosnode_->advertise<sensor_msgs::JointState>("wheel_slips", 1000);
 
-  ros::SubscribeOptions so = ros::SubscribeOptions::create<std_msgs::Bool>(
-    "detach", 1,
-    boost::bind(&GazeboRosWheelSlip::OnDetach, this, _1),
-    ros::VoidPtr(), &this->queue_);
-  this->detachSub_ = this->rosnode_->subscribe(so);
-
   // Custom Callback Queue
   this->callbackQueueThread_ =
     boost::thread(boost::bind(&GazeboRosWheelSlip::QueueThread, this));
@@ -132,11 +126,6 @@ void GazeboRosWheelSlip::PublishWheelSlips(
     ++i;
   }
   this->wheelSlipPub_.publish(this->wheelSlips_);
-}
-
-/////////////////////////////////////////////////
-void GazeboRosWheelSlip::OnDetach(const std_msgs::Bool::ConstPtr &msg)
-{
 }
 
 /////////////////////////////////////////////////
