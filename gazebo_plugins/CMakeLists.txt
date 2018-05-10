@@ -214,7 +214,7 @@ if (NOT GAZEBO_VERSION VERSION_LESS 7.3)
     ${Boost_LIBRARIES} HarnessPlugin ${catkin_LIBRARIES})
 endif()
 
-if (NOT GAZEBO_VERSION VERSION_LESS 7.3)
+if (NOT GAZEBO_VERSION VERSION_LESS 7.15)
   add_library(gazebo_ros_wheel_slip src/gazebo_ros_wheel_slip.cpp)
   add_dependencies(gazebo_ros_wheel_slip ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_gencfg)
   target_link_libraries(gazebo_ros_wheel_slip
@@ -361,7 +361,7 @@ if (NOT GAZEBO_VERSION VERSION_LESS 7.3)
     )
 endif()
 
-if (NOT GAZEBO_VERSION VERSION_LESS 7.3)
+if (NOT GAZEBO_VERSION VERSION_LESS 7.15)
   install(TARGETS gazebo_ros_wheel_slip
     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
     LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
